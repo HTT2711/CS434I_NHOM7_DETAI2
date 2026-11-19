@@ -1,0 +1,21 @@
+{
+  "name": "qr-restaurant-pos",
+  "version": "1.0.0",
+  "description": "Tasty House - QR Restaurant POS System",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "test:backend": "npm --prefix backend test -- --passWithNoTests --forceExit",
+    "build:frontend": "npm --prefix frontend run build"
+  },
+  "keywords": [
+    "restaurant",
+    "pos",
+    "qr-code",
+    "express",
+    "react",
+    "prisma"
+  ],
+  "author": "CS434 Group 7",
+  "license": "ISC"
+}
