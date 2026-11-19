@@ -11,6 +11,7 @@ async function main() {
 
   const users = [
     { username: 'admin', password: passwordHash, fullName: 'Quản trị viên', role: 'ADMIN' },
+    { username: 'user', password: passwordHash, fullName: 'Người dùng thử nghiệm', role: 'ADMIN' },
     { username: 'cashier', password: passwordHash, fullName: 'Thu ngân Tasty', role: 'CASHIER' },
     { username: 'kitchen', password: passwordHash, fullName: 'Bếp trưởng', role: 'KITCHEN' },
     { username: 'waiter', password: passwordHash, fullName: 'Nhân viên bàn', role: 'WAITER' },

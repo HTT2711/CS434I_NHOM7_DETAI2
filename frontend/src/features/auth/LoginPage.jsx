@@ -97,32 +97,55 @@ const LoginPage = () => {
         </form>
 
         {/* Demo Credentials Helper */}
-        <div className="mt-8 pt-6 border-t border-slate-100">
+        <div className="mt-6 pt-5 border-t border-slate-100">
           <p className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider text-center">
-            Tài khoản dùng thử (Mật khẩu: 123456)
+            Tài khoản nhân viên dùng thử (Mật khẩu: 123456)
           </p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-4 gap-1.5">
             <button
               type="button"
               onClick={() => handleQuickLogin('admin', '123456')}
-              className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors"
+              className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors text-center"
             >
-              Admin
+              admin
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickLogin('user', '123456')}
+              className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors text-center"
+            >
+              user
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('cashier', '123456')}
-              className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors"
+              className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors text-center"
             >
-              Thu ngân
+              cashier
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('kitchen', '123456')}
-              className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors"
+              className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors text-center"
             >
-              Bếp trưởng
+              kitchen
             </button>
+          </div>
+        </div>
+
+        {/* Customer Direct Link */}
+        <div className="mt-4 p-3 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl text-center space-y-1">
+          <p className="text-xs text-orange-950 font-bold">
+            🍽️ Bạn là khách hàng muốn trải nghiệm quét QR gọi món?
+          </p>
+          <p className="text-[11px] text-slate-500">Khách hàng không cần đăng nhập hay cài ứng dụng</p>
+          <div className="pt-1">
+            <a
+              href="/order?tableId=1"
+              className="inline-block px-4 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-xs font-bold transition-colors shadow-sm"
+            >
+              Vào thẳng Thực đơn Gọi món (Bàn 01)
+            </a>
           </div>
         </div>
       </div>
