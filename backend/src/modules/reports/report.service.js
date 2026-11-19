@@ -1,13 +1,26 @@
 const prisma = require('../../config/db');
 
-const getDashboardStats = async () => {
+const getDashboardStats = async (period = 'all') => {
+  const where = {};
+  const now = new Date();
+
+  if (period === 'today') {
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    where.createdAt = { gte: startOfDay };
+  } else if (period === 'month') {
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    where.createdAt = { gte: startOfMonth };
+  }
+
   const totalInvoices = await prisma.invoice.aggregate({
+    where,
     _sum: { finalAmount: true },
     _count: { id: true },
   });
 
   const totalRevenue = totalInvoices._sum.finalAmount || 0;
   const totalCompletedOrders = totalInvoices._count.id;
+  const averageOrderValue = totalCompletedOrders > 0 ? Math.round(totalRevenue / totalCompletedOrders) : 0;
 
   const activeOrdersCount = await prisma.order.count({
     where: { status: { in: ['PENDING', 'CONFIRMED', 'COOKING', 'READY', 'SERVED'] } },
@@ -24,6 +37,7 @@ const getDashboardStats = async () => {
   return {
     totalRevenue,
     totalCompletedOrders,
+    averageOrderValue,
     activeOrdersCount,
     totalTables,
     availableTables,
@@ -31,9 +45,20 @@ const getDashboardStats = async () => {
   };
 };
 
-const getRevenueChart = async () => {
-  // Aggregate recent invoices
+const getRevenueChart = async (period = 'all') => {
+  const where = {};
+  const now = new Date();
+
+  if (period === 'today') {
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    where.createdAt = { gte: startOfDay };
+  } else if (period === 'month') {
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    where.createdAt = { gte: startOfMonth };
+  }
+
   const invoices = await prisma.invoice.findMany({
+    where,
     orderBy: { createdAt: 'asc' },
     select: {
       finalAmount: true,

@@ -18,7 +18,7 @@ const LoginPage = () => {
     setSubmitting(true);
     try {
       const data = await login(username, password);
-      if (data.user.role === 'ADMIN') navigate('/admin/reports');
+      if (data.user.role === 'ADMIN') navigate('/admin/dashboard');
       else if (data.user.role === 'KITCHEN') navigate('/kitchen');
       else if (data.user.role === 'CASHIER') navigate('/cashier');
       else navigate('/admin/tables');

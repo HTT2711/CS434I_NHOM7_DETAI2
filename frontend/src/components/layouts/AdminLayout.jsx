@@ -24,7 +24,7 @@ const AdminLayout = () => {
   };
 
   const navItems = [
-    { name: 'Thống kê & Báo cáo', path: '/admin/reports', icon: LayoutDashboard, roles: ['ADMIN'] },
+    { name: 'Báo cáo & Doanh thu', path: '/admin/dashboard', icon: LayoutDashboard, roles: ['ADMIN'] },
     { name: 'Quản lý Bàn & QR', path: '/admin/tables', icon: Grid, roles: ['ADMIN', 'CASHIER'] },
     { name: 'Quản lý Thực đơn', path: '/admin/menu', icon: UtensilsCrossed, roles: ['ADMIN'] },
     { name: 'Quản lý Nhân viên', path: '/admin/users', icon: User, roles: ['ADMIN'] },

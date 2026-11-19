@@ -3,7 +3,7 @@ const { sendSuccess, sendError } = require('../../utils/response.util');
 
 const getDashboardStats = async (req, res) => {
   try {
-    const stats = await reportService.getDashboardStats();
+    const stats = await reportService.getDashboardStats(req.query.period || 'all');
     return sendSuccess(res, stats, 'Lấy thống kê dashboard thành công');
   } catch (error) {
     return sendError(res, error.message, 500);
@@ -12,7 +12,7 @@ const getDashboardStats = async (req, res) => {
 
 const getRevenueChart = async (req, res) => {
   try {
-    const chart = await reportService.getRevenueChart();
+    const chart = await reportService.getRevenueChart(req.query.period || 'all');
     return sendSuccess(res, chart, 'Lấy dữ liệu biểu đồ doanh thu thành công');
   } catch (error) {
     return sendError(res, error.message, 500);
