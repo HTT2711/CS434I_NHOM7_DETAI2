@@ -2,9 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --primary: #0b1329;
+  --primary-foreground: #ffffff;
+  --accent: #dfc9a5;
+  --accent-foreground: #0b1329;
+  --navy: #0b1329;
+  --border: #e2e8f0;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background-color: #f8fafc;
-  color: #1e293b;
+  font-family: 'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+@layer base {
+  input::placeholder,
+  textarea::placeholder {
+    color: #94a3b8;
+    opacity: 1;
+    font-weight: 400;
+  }
+}
+
+/* Explicit Navy & Gold utility classes to guarantee styling */
+.bg-navy-950 { background-color: #070c18 !important; }
+.bg-navy-900 { background-color: #0b1329 !important; }
+.bg-navy-850 { background-color: #0f172a !important; }
+.bg-navy-800 { background-color: #17223b !important; }
+.bg-navy-700 { background-color: #1e293b !important; }
+.text-navy-950 { color: #070c18 !important; }
+.text-navy-900 { color: #0b1329 !important; }
+.text-navy-850 { color: #0f172a !important; }
+.text-navy-800 { color: #17223b !important; }
+.text-navy-700 { color: #1e293b !important; }
+.border-navy-900 { border-color: #0b1329 !important; }
+.border-navy-800 { border-color: #17223b !important; }
+
+.bg-gold { background-color: #dfc9a5 !important; }
+.bg-gold-50 { background-color: #fbf9f5 !important; }
+.bg-gold-100 { background-color: #f5ede1 !important; }
+.bg-gold-200 { background-color: #ebd9bf !important; }
+.bg-gold-300 { background-color: #dfc9a5 !important; }
+.bg-gold-400 { background-color: #cdb185 !important; }
+.text-gold { color: #dfc9a5 !important; }
+.text-gold-400 { color: #cdb185 !important; }
+.text-gold-500 { color: #bfa072 !important; }
+.text-gold-600 { color: #9e7f50 !important; }
+.border-gold { border-color: #dfc9a5 !important; }
+
+/* Custom Tent Card Print Styling */
+@media print {
+  body {
+    background: white !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
 }

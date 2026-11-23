@@ -32,7 +32,7 @@ const CustomerLayout = () => {
           <span className="text-2xl">🍽️</span>
           <div>
             <h1 className="font-bold text-slate-800 leading-tight text-base">Tasty House</h1>
-            <p className="text-[11px] text-orange-600 font-semibold">Đặt món QR tại bàn</p>
+            <p className="text-[11px] text-navy-900 font-semibold">Đặt món QR tại bàn</p>
           </div>
         </div>
 
@@ -58,7 +58,7 @@ const CustomerLayout = () => {
           to="/order"
           className={({ isActive }) =>
             `flex flex-col items-center gap-1 text-[11px] font-bold transition-colors ${
-              isActive ? 'text-orange-600' : 'text-slate-400 hover:text-slate-600'
+              isActive ? 'text-navy-900' : 'text-slate-400 hover:text-slate-600'
             }`
           }
         >
@@ -70,14 +70,14 @@ const CustomerLayout = () => {
           to="/order/cart"
           className={({ isActive }) =>
             `flex flex-col items-center gap-1 text-[11px] font-bold transition-colors relative ${
-              isActive ? 'text-orange-600' : 'text-slate-400 hover:text-slate-600'
+              isActive ? 'text-navy-900' : 'text-slate-400 hover:text-slate-600'
             }`
           }
         >
           <div className="relative">
             <ShoppingBag size={18} />
             {totalCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 bg-orange-600 text-white rounded-full w-4 h-4 text-[9px] font-extrabold flex items-center justify-center">
+              <span className="absolute -top-1.5 -right-2 bg-navy-900 text-white rounded-full w-4 h-4 text-[9px] font-extrabold flex items-center justify-center">
                 {totalCount}
               </span>
             )}
@@ -89,7 +89,7 @@ const CustomerLayout = () => {
           to="/order/status"
           className={({ isActive }) =>
             `flex flex-col items-center gap-1 text-[11px] font-bold transition-colors ${
-              isActive ? 'text-orange-600' : 'text-slate-400 hover:text-slate-600'
+              isActive ? 'text-navy-900' : 'text-slate-400 hover:text-slate-600'
             }`
           }
         >

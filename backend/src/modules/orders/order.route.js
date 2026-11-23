@@ -29,10 +29,21 @@ router.post('/', optionalAuth, orderController.createOrder);
 
 // Customer or Staff route to view order status
 router.get('/:id', orderController.getOrderById);
+router.post('/items/:itemId/cancel', optionalAuth, orderController.cancelOrderItem);
 
-// Staff routes
-router.get('/', verifyToken, orderController.getOrders);
+// Middleware: Nhân viên cần token để xem toàn bộ đơn, nhưng khách hàng tra cứu theo tableId được phép xem
+const allowCustomerOrStaff = (req, res, next) => {
+  if (req.query.tableId) {
+    return optionalAuth(req, res, next);
+  }
+  return verifyToken(req, res, next);
+};
+
+// Staff or customer table routes
+router.get('/', allowCustomerOrStaff, orderController.getOrders);
 router.patch('/:id/status', verifyToken, orderController.updateOrderStatus);
+router.post('/:id/confirm', verifyToken, orderController.confirmOrder);
+router.post('/:id/cancel', optionalAuth, orderController.cancelOrder);
 router.patch('/items/:itemId/status', verifyToken, orderController.updateOrderItemStatus);
 
 module.exports = router;

@@ -5,7 +5,7 @@ const authorizeRole = (...allowedRoles) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
       return sendError(
         res,
-        `Forbidden. Required roles: [${allowedRoles.join(', ')}]. Your role: ${req.user ? req.user.role : 'none'}`,
+        `Bạn không có quyền thực hiện thao tác này. Quyền yêu cầu: [${allowedRoles.join(', ')}]. Quyền hiện tại: ${req.user ? req.user.role : 'chưa đăng nhập'}`,
         403
       );
     }

@@ -4,7 +4,7 @@ const initSocket = (server) => {
   const { Server } = require('socket.io');
   ioInstance = new Server(server, {
     cors: {
-      origin: process.env.CLIENT_URL || '*',
+      origin: '*',
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     },
   });
@@ -26,6 +26,8 @@ const initSocket = (server) => {
 
     // Customer calls waiter
     socket.on('call-waiter', (data) => {
+      ioInstance.emit('waiter-called', data);
+      ioInstance.emit('call-waiter', data);
       ioInstance.to('staff-room').emit('waiter-called', data);
     });
 

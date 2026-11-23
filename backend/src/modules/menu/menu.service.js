@@ -3,9 +3,12 @@ const { getIO } = require('../../config/socket');
 
 const getCategories = async (forCustomer = false) => {
   return await prisma.category.findMany({
+    where: { isDeleted: false },
     include: {
       items: {
-        where: forCustomer ? { isSelling: true } : undefined,
+        where: forCustomer
+          ? { isSelling: true, isDeleted: false }
+          : { isDeleted: false },
       },
     },
     orderBy: { id: 'asc' },
@@ -17,6 +20,7 @@ const createCategory = async (data) => {
     data: {
       name: data.name,
       description: data.description,
+      isDeleted: false,
     },
   });
 };
@@ -33,23 +37,24 @@ const updateCategory = async (id, data) => {
 
 const deleteCategory = async (id) => {
   const countItems = await prisma.menuItem.count({
-    where: { categoryId: Number(id) },
+    where: { categoryId: Number(id), isDeleted: false },
   });
   if (countItems > 0) {
-    throw new Error(`Không thể xóa danh mục đang chứa ${countItems} món ăn! Hãy chuyển hoặc xóa các món trước.`);
+    throw new Error(`Vui lòng chuyển hoặc xóa ${countItems} món trong danh mục trước khi xóa danh mục!`);
   }
 
-  return await prisma.category.delete({
+  return await prisma.category.update({
     where: { id: Number(id) },
+    data: { isDeleted: true },
   });
 };
 
 const getAllMenuItems = async (filters = {}) => {
-  const where = {};
+  const where = { isDeleted: false };
   if (filters.categoryId) {
     where.categoryId = Number(filters.categoryId);
   }
-  // If customer request: only show isSelling = true
+  // If customer request: only show isSelling = true AND isDeleted = false
   if (filters.forCustomer === 'true' || filters.customer === 'true') {
     where.isSelling = true;
   }
@@ -124,6 +129,7 @@ const toggleSelling = async (id) => {
   const io = getIO();
   if (io) {
     io.emit('menu_item_updated', updated);
+    io.emit('menu-updated', updated);
   }
 
   return updated;
@@ -142,14 +148,16 @@ const toggleStock = async (id) => {
   const io = getIO();
   if (io) {
     io.emit('menu_item_updated', updated);
+    io.emit('menu-updated', updated);
   }
 
   return updated;
 };
 
 const deleteMenuItem = async (id) => {
-  return await prisma.menuItem.delete({
+  return await prisma.menuItem.update({
     where: { id: Number(id) },
+    data: { isDeleted: true },
   });
 };
 

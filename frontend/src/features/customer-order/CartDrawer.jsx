@@ -28,6 +28,7 @@ const CartDrawer = ({ isOpen, onClose, table }) => {
         tableId: table.id,
         items: cartItems.map((item) => ({
           menuItemId: item.menuItemId,
+          name: item.name,
           quantity: item.quantity,
           note: item.note || '',
         })),
@@ -56,7 +57,7 @@ const CartDrawer = ({ isOpen, onClose, table }) => {
       <div className="relative w-full max-w-md bg-white h-full flex flex-col shadow-2xl z-10">
         <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-2">
-            <ShoppingBag className="text-orange-600" size={20} />
+            <ShoppingBag className="text-navy-900" size={20} />
             <h2 className="font-bold text-slate-800">Giỏ hàng của bạn ({totalCount})</h2>
           </div>
           <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg">
@@ -85,7 +86,7 @@ const CartDrawer = ({ isOpen, onClose, table }) => {
                 )}
                 <div className="flex-1 min-w-0">
                   <h4 className="font-semibold text-sm text-slate-800 truncate">{item.name}</h4>
-                  <p className="text-xs font-bold text-orange-600">
+                  <p className="text-xs font-bold text-navy-900">
                     {item.price.toLocaleString('vi-VN')} đ
                   </p>
                 </div>
@@ -93,14 +94,14 @@ const CartDrawer = ({ isOpen, onClose, table }) => {
                 <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-lg border border-slate-200">
                   <button
                     onClick={() => updateQuantity(item.menuItemId, item.quantity - 1)}
-                    className="text-slate-500 hover:text-orange-600"
+                    className="text-slate-500 hover:text-navy-900"
                   >
                     <Minus size={14} />
                   </button>
                   <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
                   <button
                     onClick={() => updateQuantity(item.menuItemId, item.quantity + 1)}
-                    className="text-slate-500 hover:text-orange-600"
+                    className="text-slate-500 hover:text-navy-900"
                   >
                     <Plus size={14} />
                   </button>
@@ -128,13 +129,13 @@ const CartDrawer = ({ isOpen, onClose, table }) => {
                 onChange={(e) => setOrderNote(e.target.value)}
                 placeholder="Ví dụ: Ăn liền, không hành, làm nhanh giúp mình..."
                 rows={2}
-                className="w-full p-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500"
+                className="w-full p-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-navy-900"
               />
             </div>
 
             <div className="flex justify-between items-center text-sm font-semibold text-slate-800 pt-1">
               <span>Tổng thanh toán tạm tính:</span>
-              <span className="text-lg font-bold text-orange-600">
+              <span className="text-lg font-bold text-navy-900">
                 {totalAmount.toLocaleString('vi-VN')} đ
               </span>
             </div>
@@ -142,7 +143,7 @@ const CartDrawer = ({ isOpen, onClose, table }) => {
             <button
               onClick={handlePlaceOrder}
               disabled={submitting}
-              className="w-full py-3 bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-bold rounded-xl text-sm transition-colors shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2"
+              className="w-full py-3 bg-navy-900 hover:bg-navy-800 active:bg-orange-800 text-white font-bold rounded-xl text-sm transition-colors shadow-lg shadow-sm flex items-center justify-center gap-2"
             >
               {submitting ? 'Đang gửi gọi món...' : `Gửi gọi món (${table?.tableNumber || 'Bàn'})`}
             </button>

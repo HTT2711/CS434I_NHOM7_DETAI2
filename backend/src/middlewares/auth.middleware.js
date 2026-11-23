@@ -21,6 +21,7 @@ const verifyToken = async (req, res, next) => {
       return sendError(res, 'User not found or token invalid.', 401);
     }
 
+    console.log('[AuthMiddleware] Verified user:', { id: user.id, username: user.username, role: user.role });
     req.user = user;
     next();
   } catch (error) {

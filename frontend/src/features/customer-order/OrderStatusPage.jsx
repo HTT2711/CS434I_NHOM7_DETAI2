@@ -84,7 +84,7 @@ const OrderStatusPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900"></div>
       </div>
     );
   }
@@ -98,7 +98,7 @@ const OrderStatusPage = () => {
         <p className="text-slate-600 font-semibold text-sm">Chưa có đơn hàng nào tại bàn hiện tại</p>
         <button
           onClick={() => navigate('/order')}
-          className="px-5 py-2.5 bg-orange-600 text-white rounded-xl text-xs font-bold shadow-md shadow-orange-500/20"
+          className="px-5 py-2.5 bg-navy-900 text-white rounded-xl text-xs font-bold shadow-md shadow-sm"
         >
           Xem thực đơn đặt món
         </button>
@@ -129,7 +129,7 @@ const OrderStatusPage = () => {
 
       {/* Main Status Hero */}
       <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center">
-        <div className="w-16 h-16 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center mx-auto mb-3 shadow-inner">
+        <div className="w-16 h-16 rounded-full bg-stone-100 text-navy-900 flex items-center justify-center mx-auto mb-3 shadow-inner">
           {order.status === 'COOKING' ? (
             <ChefHat size={32} className="animate-pulse" />
           ) : order.status === 'READY' || order.status === 'COMPLETED' ? (
@@ -158,38 +158,48 @@ const OrderStatusPage = () => {
 
         <div className="space-y-2.5">
           {order.items.map((item) => (
-            <div key={item.id} className="p-2.5 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
-              <div className="flex justify-between items-center text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-md bg-orange-100 text-orange-700 font-extrabold text-[11px] flex items-center justify-center">
-                    {item.quantity}
-                  </span>
-                  <span className="font-bold text-slate-800">{item.menuItem?.name}</span>
-                </div>
-                <span className="font-extrabold text-slate-800">
-                  {(item.price * item.quantity).toLocaleString('vi-VN')} đ
-                </span>
-              </div>
+            <div key={item.id} className="p-3 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
+              <div className="flex items-start gap-3">
+                <img
+                  src={item.menuItem?.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200'}
+                  alt={item.menuItem?.name}
+                  className="w-14 h-14 rounded-xl object-cover shrink-0 border border-stone-200"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200';
+                  }}
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start text-xs gap-1">
+                    <p className="font-bold text-navy-900 text-sm leading-snug">
+                      <span className="font-extrabold text-gold-600 mr-1.5">{item.quantity}×</span>
+                      {item.menuItem?.name}
+                    </p>
+                    <span className="font-extrabold text-navy-900 shrink-0">
+                      {(item.price * item.quantity).toLocaleString('vi-VN')}đ
+                    </span>
+                  </div>
 
-              <div className="flex items-center justify-between text-[11px] pt-1">
-                <span className="text-slate-400 italic">
-                  {item.note ? `Ghi chú: ${item.note}` : 'Không có ghi chú'}
-                </span>
-                <span
-                  className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                    item.status === 'READY'
-                      ? 'bg-emerald-100 text-emerald-800'
-                      : item.status === 'COOKING'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-amber-100 text-amber-800'
-                  }`}
-                >
-                  {item.status === 'READY'
-                    ? 'Hoàn thành'
-                    : item.status === 'COOKING'
-                    ? 'Đang nấu'
-                    : 'Chờ chế biến'}
-                </span>
+                  <div className="flex items-center justify-between text-[11px] pt-1 mt-1 border-t border-stone-200/50">
+                    <span className="text-stone-500 italic text-[11px]">
+                      {item.note ? `Ghi chú: ${item.note}` : 'Không có ghi chú'}
+                    </span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                        item.status === 'READY'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : item.status === 'COOKING'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-amber-100 text-amber-800'
+                      }`}
+                    >
+                      {item.status === 'READY'
+                        ? 'Hoàn thành'
+                        : item.status === 'COOKING'
+                        ? 'Đang nấu'
+                        : 'Chờ chế biến'}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -197,7 +207,7 @@ const OrderStatusPage = () => {
 
         <div className="border-t border-slate-100 pt-3 flex justify-between items-center font-extrabold text-sm">
           <span>Tổng tạm tính:</span>
-          <span className="text-base text-orange-600">
+          <span className="text-base text-navy-900">
             {order.totalAmount.toLocaleString('vi-VN')} đ
           </span>
         </div>

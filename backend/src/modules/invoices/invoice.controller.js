@@ -3,7 +3,7 @@ const { sendSuccess, sendError } = require('../../utils/response.util');
 
 const createInvoice = async (req, res) => {
   try {
-    const { orderId, discount, paymentMethod } = req.body;
+    const { orderId, discount, vatRate, paymentMethod, voucherCode } = req.body;
     if (!orderId) {
       return sendError(res, 'Vui lòng cung cấp mã đơn hàng cần thanh toán', 400);
     }
@@ -12,7 +12,9 @@ const createInvoice = async (req, res) => {
       orderId,
       cashierId,
       discount,
+      vatRate,
       paymentMethod,
+      voucherCode,
     });
     return sendSuccess(res, invoice, 'Thanh toán và tạo hóa đơn thành công', 201);
   } catch (error) {

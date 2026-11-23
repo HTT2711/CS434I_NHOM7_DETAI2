@@ -25,7 +25,7 @@ const OrderTicketCard = ({ order, onUpdateStatus, onUpdateItemStatus }) => {
       {/* Ticket Header */}
       <div className="p-3 bg-slate-900 text-white flex items-center justify-between">
         <div>
-          <span className="text-base font-extrabold text-orange-400">{order.table?.tableNumber}</span>
+          <span className="text-base font-extrabold text-gold-500">{order.table?.tableNumber}</span>
           <p className="text-[10px] text-slate-400 font-mono">{order.orderNumber}</p>
         </div>
         <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ const OrderTicketCard = ({ order, onUpdateStatus, onUpdateItemStatus }) => {
             }`}
           >
             <div className="flex items-start gap-2 min-w-0">
-              <span className="w-6 h-6 rounded-lg bg-orange-100 text-orange-700 font-bold text-xs flex items-center justify-center shrink-0">
+              <span className="w-6 h-6 rounded-lg bg-stone-200 text-navy-900 font-bold text-xs flex items-center justify-center shrink-0">
                 {item.quantity}
               </span>
               <div>

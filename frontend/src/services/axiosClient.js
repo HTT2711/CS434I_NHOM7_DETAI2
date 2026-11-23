@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+const getBaseURL = () => {
+  return '/api';
+};
+
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -9,7 +13,8 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    // Ưu tiên token của riêng tab hiện tại (sessionStorage) để tránh xung đột đa tab (Admin / Cashier / Kitchen)
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

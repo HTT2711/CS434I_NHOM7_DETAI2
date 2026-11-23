@@ -1,7 +1,7 @@
 {
-  "name": "qr-restaurant-pos",
+  "name": "tasty-house-pos",
   "version": "1.0.0",
-  "description": "Tasty House - QR Restaurant POS System",
+  "description": "Tasty House - Hệ Thống Quản Lý Nhà Hàng & Đặt Món QR",
   "scripts": {
     "dev:backend": "npm --prefix backend run dev",
     "dev:frontend": "npm --prefix frontend run dev",

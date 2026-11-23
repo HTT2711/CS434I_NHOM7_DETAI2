@@ -56,10 +56,46 @@ const updateOrderItemStatus = async (req, res) => {
   }
 };
 
+const confirmOrder = async (req, res) => {
+  try {
+    const order = await orderService.confirmOrder(req.params.id, req.user?.id);
+    return sendSuccess(res, order, 'Xác nhận đơn hàng thành công');
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+};
+
+const cancelOrder = async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const order = await orderService.cancelOrder(req.params.id, reason, req.user?.id);
+    return sendSuccess(res, order, 'Đã hủy đơn hàng');
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+};
+
+const cancelOrderItem = async (req, res) => {
+  try {
+    const { reason, isCustomer } = req.body;
+    const item = await orderService.cancelOrderItem(req.params.itemId, {
+      reason,
+      isCustomer: !!isCustomer,
+      userId: req.user?.id,
+    });
+    return sendSuccess(res, item, 'Đã hủy món');
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+};
+
 module.exports = {
   createOrder,
   getOrders,
   getOrderById,
   updateOrderStatus,
   updateOrderItemStatus,
+  confirmOrder,
+  cancelOrder,
+  cancelOrderItem,
 };

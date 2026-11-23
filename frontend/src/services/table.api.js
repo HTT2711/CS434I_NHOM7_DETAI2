@@ -7,5 +7,6 @@ export const tableApi = {
   create: (data) => axiosClient.post('/tables', data),
   update: (id, data) => axiosClient.put(`/tables/${id}`, data),
   updateStatus: (id, status) => axiosClient.patch(`/tables/${id}/status`, { status }),
+  regenerateQr: (id) => axiosClient.post(`/tables/${id}/regenerate-qr`),
   delete: (id) => axiosClient.delete(`/tables/${id}`),
 };

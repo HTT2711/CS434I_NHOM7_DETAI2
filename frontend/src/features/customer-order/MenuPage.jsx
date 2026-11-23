@@ -107,7 +107,7 @@ const MenuPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900"></div>
       </div>
     );
   }
@@ -143,7 +143,7 @@ const MenuPage = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Tìm món ăn, đồ uống..."
-          className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 shadow-sm"
+          className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-navy-900 shadow-sm"
         />
       </div>
 
@@ -165,7 +165,7 @@ const MenuPage = () => {
             onClick={() => setSelectedCategory(cat.id)}
             className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
               selectedCategory === cat.id
-                ? 'bg-orange-600 text-white shadow-sm'
+                ? 'bg-navy-900 text-white shadow-sm'
                 : 'bg-white text-slate-600 border border-slate-200'
             }`}
           >
@@ -211,7 +211,7 @@ const MenuPage = () => {
               </div>
 
               <div className="flex items-center justify-between mt-2">
-                <span className="font-bold text-sm text-orange-600">
+                <span className="font-bold text-sm text-navy-900">
                   {item.price.toLocaleString('vi-VN')} đ
                 </span>
 
@@ -221,7 +221,7 @@ const MenuPage = () => {
                     className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                       addedAnimationId === item.id
                         ? 'bg-emerald-600 text-white'
-                        : 'bg-orange-50 text-orange-600 hover:bg-orange-100 active:scale-95'
+                        : 'bg-stone-100 text-navy-900 hover:bg-stone-200 active:scale-95'
                     }`}
                   >
                     {addedAnimationId === item.id ? (
@@ -258,7 +258,7 @@ const MenuPage = () => {
             className="w-full bg-slate-900 text-white rounded-2xl p-4 shadow-xl flex items-center justify-between active:scale-[0.98] transition-transform"
           >
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-orange-600 flex items-center justify-center font-bold text-sm">
+              <div className="w-9 h-9 rounded-xl bg-navy-900 flex items-center justify-center font-bold text-sm">
                 {totalCount}
               </div>
               <div className="text-left">
@@ -266,7 +266,7 @@ const MenuPage = () => {
                 <p className="font-bold text-base">{totalAmount.toLocaleString('vi-VN')} đ</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 font-bold text-sm text-orange-400">
+            <div className="flex items-center gap-2 font-bold text-sm text-gold-500">
               <span>Xem giỏ hàng</span>
               <ShoppingBag size={18} />
             </div>

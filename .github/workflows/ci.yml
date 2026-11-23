@@ -1,4 +1,4 @@
-name: CI Pipeline - QR Restaurant POS
+name: CI Pipeline - Tasty House POS
 
 on:
   pull_request:
@@ -36,14 +36,14 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
         env:
-          DATABASE_URL: "mysql://root:root@localhost:3306/qr_restaurant_test"
+          DATABASE_URL: "mysql://root:root@localhost:3306/tasty_house_test"
 
       - name: Run Jest Tests
         run: npm test -- --passWithNoTests --forceExit
         env:
           NODE_ENV: test
           JWT_SECRET: "ci_test_secret_key_cs434"
-          DATABASE_URL: "mysql://root:root@localhost:3306/qr_restaurant_test"
+          DATABASE_URL: "mysql://root:root@localhost:3306/tasty_house_test"
 
   frontend-build:
     name: Frontend - Vite React Build Check

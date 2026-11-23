@@ -1,7 +1,7 @@
 const prisma = require('../../config/db');
 const { getIO } = require('../../config/socket');
 
-const createInvoice = async ({ orderId, cashierId, discount = 0, paymentMethod = 'CASH' }) => {
+const createInvoice = async ({ orderId, cashierId, discount = 0, vatRate = 8, paymentMethod = 'CASH', voucherCode = null }) => {
   const order = await prisma.order.findUnique({
     where: { id: Number(orderId) },
     include: { table: true, items: { include: { menuItem: true } } },
@@ -19,9 +19,12 @@ const createInvoice = async ({ orderId, cashierId, discount = 0, paymentMethod =
     throw new Error('Đơn hàng này đã được thanh toán và tạo hóa đơn');
   }
 
-  const totalAmount = order.totalAmount;
+  const subtotal = order.totalAmount;
   const numDiscount = Number(discount) || 0;
-  const finalAmount = Math.max(0, totalAmount - numDiscount);
+  const numVatRate = vatRate !== undefined ? Number(vatRate) : 8;
+  const taxableAmount = Math.max(0, subtotal - numDiscount);
+  const vatAmount = Math.round(taxableAmount * (numVatRate / 100));
+  const finalAmount = taxableAmount + vatAmount;
 
   const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const countToday = await prisma.invoice.count();
@@ -29,7 +32,7 @@ const createInvoice = async ({ orderId, cashierId, discount = 0, paymentMethod =
   const invoiceNumber = `INV-${todayStr}-${String(countToday + 1).padStart(4, '0')}-${rand}`;
 
   // Execute in Prisma Transaction (NFR04, UC05)
-  const invoice = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     // 1. Mark order as COMPLETED
     await tx.order.update({
       where: { id: Number(orderId) },
@@ -42,8 +45,10 @@ const createInvoice = async ({ orderId, cashierId, discount = 0, paymentMethod =
         invoiceNumber,
         orderId: Number(orderId),
         cashierId: cashierId ? Number(cashierId) : null,
-        totalAmount,
+        totalAmount: subtotal,
         discount: numDiscount,
+        vatRate: numVatRate,
+        vatAmount: vatAmount,
         finalAmount,
         paymentMethod,
         paymentStatus: 'PAID',
@@ -62,21 +67,64 @@ const createInvoice = async ({ orderId, cashierId, discount = 0, paymentMethod =
       },
     });
 
-    // 3. Mark table as AVAILABLE
-    await tx.table.update({
-      where: { id: order.tableId },
-      data: { status: 'AVAILABLE' },
+    // 3. Mark table as AVAILABLE only if no remaining active orders (e.g. after split bill)
+    const remainingActiveCount = await tx.order.count({
+      where: {
+        tableId: order.tableId,
+        id: { not: Number(orderId) },
+        status: { in: ['PENDING', 'AWAITING_CONFIRMATION', 'CONFIRMED', 'COOKING', 'READY', 'SERVED'] },
+      },
     });
 
-    return newInvoice;
+    const newTableStatus = remainingActiveCount > 0 ? 'OCCUPIED' : 'AVAILABLE';
+
+    await tx.table.update({
+      where: { id: order.tableId },
+      data: { status: newTableStatus },
+    });
+
+    // 4. Update promotion usedCount if voucherCode provided
+    if (voucherCode) {
+      await tx.promotion.updateMany({
+        where: { code: String(voucherCode).trim().toUpperCase() },
+        data: { usedCount: { increment: 1 } },
+      });
+    }
+
+    // 5. Record audit log
+    await tx.auditLog.create({
+      data: {
+        userId: cashierId ? Number(cashierId) : null,
+        action: 'CHECKOUT_INVOICE',
+        entityType: 'INVOICE',
+        entityId: String(newInvoice.id),
+        detail: JSON.stringify({
+          invoiceNumber,
+          orderId,
+          subtotal,
+          discount: numDiscount,
+          voucherCode,
+          vatAmount,
+          finalAmount,
+          paymentMethod,
+        }),
+      },
+    });
+
+    return { newInvoice, newTableStatus };
   });
+
+  const invoice = result.newInvoice;
+  const newTableStatus = result.newTableStatus;
 
   const io = getIO();
   if (io) {
+    io.emit('invoice-created', invoice);
+    io.emit('order-completed', invoice);
+    io.emit('table_status_updated', { id: order.tableId, status: newTableStatus });
+    io.emit('table-status-updated', { id: order.tableId, status: newTableStatus });
     io.to('staff-room').emit('invoice-created', invoice);
     io.to(`table-${order.tableId}`).emit('order-completed', invoice);
-    io.emit('table_status_updated', { id: order.tableId, status: 'AVAILABLE' });
-    io.emit('table-status-updated', { id: order.tableId, status: 'AVAILABLE' });
   }
 
   return invoice;
@@ -151,6 +199,7 @@ const mergeTables = async ({ sourceTableId, targetTableId }) => {
     if (io) {
       io.emit('table_status_updated', { id: Number(sourceTableId), status: 'AVAILABLE' });
       io.emit('table-status-updated', { id: Number(sourceTableId), status: 'AVAILABLE' });
+      io.emit('order-status-updated', { id: targetOrder.id });
       io.to('staff-room').emit('order-status-updated', { id: targetOrder.id });
     }
 
@@ -254,6 +303,8 @@ const splitBill = async ({ orderId, itemsToSplit }) => {
 
     const io = getIO();
     if (io) {
+      io.emit('new_order', splitOrder);
+      io.emit('order-created', splitOrder);
       io.to('staff-room').emit('new_order', splitOrder);
       io.to('staff-room').emit('order-created', splitOrder);
     }

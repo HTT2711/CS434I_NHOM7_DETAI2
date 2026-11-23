@@ -8,14 +8,18 @@ export const SocketProvider = ({ children }) => {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
-    const socketInstance = io(socketUrl, {
+    const socketInstance = io(typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173', {
+      path: '/socket.io',
       transports: ['websocket', 'polling'],
     });
 
     socketInstance.on('connect', () => {
       setConnected(true);
       console.log('Socket connected:', socketInstance.id);
+      const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+      if (token) {
+        socketInstance.emit('join-staff');
+      }
     });
 
     socketInstance.on('disconnect', () => {

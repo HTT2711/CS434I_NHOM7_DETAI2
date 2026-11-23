@@ -67,6 +67,15 @@ const deleteTable = async (req, res) => {
   }
 };
 
+const regenerateQr = async (req, res) => {
+  try {
+    const table = await tableService.regenerateTableQr(req.params.id, req.user?.id);
+    return sendSuccess(res, table, 'Tạo lại mã QR thành công');
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+};
+
 module.exports = {
   getAllTables,
   getTableById,
@@ -74,5 +83,6 @@ module.exports = {
   createTable,
   updateTable,
   updateStatus,
+  regenerateQr,
   deleteTable,
 };

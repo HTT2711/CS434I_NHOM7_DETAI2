@@ -18,11 +18,11 @@ enum TableStatus {
   AVAILABLE
   OCCUPIED
   WAITING_PAYMENT
-  RESERVED
 }
 
 enum OrderStatus {
   PENDING
+  AWAITING_CONFIRMATION
   CONFIRMED
   COOKING
   READY
@@ -69,9 +69,11 @@ model User {
 model Table {
   id          Int         @id @default(autoincrement())
   tableNumber String      @unique
+  area        String      @default("Khu A - Tầng 1")
   capacity    Int         @default(4)
   token       String?     @unique
   status      TableStatus @default(AVAILABLE)
+  isDeleted   Boolean     @default(false)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -84,6 +86,7 @@ model Category {
   id          Int        @id @default(autoincrement())
   name        String     @unique
   description String?
+  isDeleted   Boolean    @default(false)
   items       MenuItem[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -99,6 +102,7 @@ model MenuItem {
   imageUrl    String?
   isSelling   Boolean  @default(true)   // Admin: Đang bán / Ngừng bán
   isAvailable Boolean  @default(true)   // Bếp: Còn hàng / Tạm hết món trong ca
+  isDeleted   Boolean  @default(false)
   categoryId  Int
   category    Category @relation(fields: [categoryId], references: [id])
 
@@ -124,22 +128,25 @@ model Order {
   items   OrderDetail[]
   invoice Invoice?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@map("orders")
 }
 
 model OrderDetail {
-  id         Int             @id @default(autoincrement())
-  orderId    Int
-  order      Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  menuItemId Int
-  menuItem   MenuItem        @relation(fields: [menuItemId], references: [id])
-  quantity   Int             @default(1)
-  price      Float
-  note       String?
-  status     OrderItemStatus @default(PENDING)
+  id                  Int             @id @default(autoincrement())
+  orderId             Int
+  order               Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId          Int
+  menuItem            MenuItem        @relation(fields: [menuItemId], references: [id])
+  quantity            Int             @default(1)
+  price               Float
+  note                String?
+  status              OrderItemStatus @default(PENDING)
+  cancelReason        String?
+  cancelledByCustomer Boolean         @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -156,6 +163,8 @@ model Invoice {
   cashier       User?         @relation(fields: [cashierId], references: [id])
   totalAmount   Float
   discount      Float         @default(0)
+  vatRate       Float         @default(8)
+  vatAmount     Float         @default(0)
   finalAmount   Float
   paymentMethod PaymentMethod @default(CASH)
   paymentStatus PaymentStatus @default(PAID)
@@ -165,4 +174,73 @@ model Invoice {
   updatedAt DateTime @updatedAt
 
   @@map("invoices")
+}
+
+model Promotion {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique
+  name        String
+  type        String   @default("percent")
+  value       Float    @default(10)
+  maxDiscount Float    @default(0)
+  minOrder    Float    @default(0)
+  usageLimit  Int      @default(0)
+  usedCount   Int      @default(0)
+  active      Boolean  @default(true)
+  startDate   DateTime @default(now())
+  endDate     DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("promotions")
+}
+
+
+
+model SupportRequest {
+  id        Int      @id @default(autoincrement())
+  tableId   Int
+  reason    String
+  status    String   @default("cho_xu_ly")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("support_requests")
+}
+
+model Reservation {
+  id              Int      @id @default(autoincrement())
+  customerName    String
+  customerPhone   String
+  partySize       Int      @default(2)
+  reservationTime DateTime
+  note            String?
+  tableId         Int?
+  status          String   @default("cho_xac_nhan")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("reservations")
+}
+
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int?
+  action     String
+  entityType String
+  entityId   String?
+  detail     String?
+  createdAt  DateTime @default(now())
+
+  @@map("audit_logs")
 }
